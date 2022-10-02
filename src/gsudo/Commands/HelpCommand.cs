@@ -15,9 +15,9 @@ namespace gsudo.Commands
 
         internal static void ShowVersion()
         {
-            //var assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            //Console.WriteLine($"{assembly.GetName().Name} v{GitVersionInformation.FullSemVer} ({GitVersionInformation.FullBuildMetaData})");
+            Console.WriteLine($"{assembly.GetName().Name} v{GitVersionInformation.FullSemVer} ({GitVersionInformation.FullBuildMetaData})");
 
             Console.ResetColor();
             Console.WriteLine("Copyright(c) 2019-2022 Gerardo Grignoli and GitHub contributors");
