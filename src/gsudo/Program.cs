@@ -9,9 +9,8 @@ namespace gsudo
     {
         async static Task<int> Main()
         {
-            SymbolicLinkSupport.EnableAssemblyLoadFix();
-
-            return await Start().ConfigureAwait(false);
+            await new ShowVersionHelpCommand().Execute().ConfigureAwait(false);
+            return 0;
         }
 
         private static async Task<int> Start()
