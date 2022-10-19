@@ -74,7 +74,7 @@ jobs:
         replacesArtifacts: true
 
   chocolatey:
-    name: Pack & Release to Chocolatey
+    name: Pack & Release to Chocolatey/WinGet
     #if: github.ref == 'refs/heads/master' && github.repository == 'gerardog/gsudo'
     if: github.repository == 'gerardog/gsudo'
     runs-on: windows-latest
@@ -100,7 +100,13 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Binaries
-        path: ./artifacts       
+        path: ./artifacts
+    - name: WinGet Releaser
+      uses: vedantmgoyal2009/winget-releaser@v1
+      with: 
+        token: ${{ secrets.WINGET_RELEASER_TOKEN }}
+        identifier: gerardog.gsudo
+        installers-regex: '\.msi$' # Only .msi files
 
   docs:
     needs: release
