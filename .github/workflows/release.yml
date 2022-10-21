@@ -14,7 +14,7 @@ jobs:
       checks: write
 
   release:
-    name: Sign & Release to GitHub
+    name: Sign & Create Draft Release
     #if: github.ref == 'refs/heads/master' && github.repository == 'gerardog/gsudo'
     if: github.repository == 'gerardog/gsudo'
     runs-on: windows-latest
@@ -57,7 +57,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Installer
-        path: ./artifacts/gsudoSetup.msi             
+        path: ./artifacts/gsudoSetup.msi
     - name: Create Release
       uses: ncipollo/release-action@v1.10.0
       with:
@@ -73,18 +73,31 @@ jobs:
         omitBodyDuringUpdate: true 
         replacesArtifacts: true
 
-  chocolatey:
-    name: Pack & Release to Chocolatey/WinGet
+  publish:
+    name: Publish Release
     #if: github.ref == 'refs/heads/master' && github.repository == 'gerardog/gsudo'
     if: github.repository == 'gerardog/gsudo'
     runs-on: windows-latest
     needs: [build, release]
+    permissions:
+      contents: write
     environment:
       name: release-chocolatey
     env:
       version: ${{ needs.build.outputs.version }}
       version_MajorMinorPatch: ${{ needs.build.outputs.version_MajorMinorPatch }}
     steps:
+    - name: Publish Release
+      uses: ncipollo/release-action@v1.10.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN  }}
+        name: gsudo v${{env.version}}
+        tag: v${{env.version}}
+        commit: ${{env.GITHUB_SHA}}
+        draft: false
+        allowUpdates: true 
+        omitBodyDuringUpdate: true
+        omitPrereleaseDuringUpdate: true
     - uses: actions/checkout@v2
       with: 
         fetch-depth: 0
@@ -108,10 +121,10 @@ jobs:
         identifier: gerardog.gsudo
         installers-regex: '\.msi$' # Only .msi files
 
-  docs:
-    needs: release
-    uses: ./.github/workflows/docs.yml
-    permissions:
-      id-token: write
-      contents: read
-      pages: write
+#  docs:
+#    needs: release
+#    uses: ./.github/workflows/docs.yml
+#    permissions:
+#      id-token: write
+#      contents: read
+#      pages: write
