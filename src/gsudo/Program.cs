@@ -11,7 +11,7 @@ namespace gsudo
         {
             SymbolicLinkSupport.EnableAssemblyLoadFix();
 
-            return await Start().ConfigureAwait(false);
+            return await new HelpCommand().Execute();
         }
 
         private static async Task<int> Start()
